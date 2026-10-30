@@ -1,3 +1,4 @@
+
 import {
   createSession,
   getCookie,
@@ -5,7 +6,8 @@ import {
   clearStateCookie
 } from "../_lib/auth.js";
 
-const REDIRECT_URI = "https://sphynxweb.pages.dev/oauth/callback";
+const REDIRECT_URI =
+  "https://sphynxweb.pages.dev/oauth/callback";
 
 function fail(message) {
   return Response.redirect(
@@ -28,7 +30,7 @@ export async function onRequestGet({ request, env }) {
   if (!env.DISCORD_CLIENT_ID ||
       !env.DISCORD_CLIENT_SECRET ||
       !env.SESSION_SECRET) {
-    return fail("The website login is not configured yet.");
+    return fail("Website login is not configured.");
   }
 
   try {
@@ -52,7 +54,7 @@ export async function onRequestGet({ request, env }) {
     const tokenData = await tokenResponse.json();
 
     if (!tokenResponse.ok || !tokenData.access_token) {
-      return fail("Discord authorization failed. Please try again.");
+      return fail("Discord authorization failed.");
     }
 
     const userResponse = await fetch(
@@ -70,17 +72,25 @@ export async function onRequestGet({ request, env }) {
       return fail("Could not verify your Discord account.");
     }
 
-    const session = await createSession(user, env.SESSION_SECRET);
+    const session = await createSession(
+      user,
+      env.SESSION_SECRET
+    );
 
     const headers = new Headers({
-      Location: "https://sphynxweb.pages.dev/",
-      "Set-Cookie": sessionCookie(session)
+      Location: "/",
+      "Set-Cookie": sessionCookie(session),
+      "Cache-Control": "no-store"
     });
 
     headers.append("Set-Cookie", clearStateCookie());
 
-    return new Response(null, { status: 302, headers });
-  } catch (error) {
+    return new Response(null, {
+      status: 302,
+      headers
+    });
+
+  } catch {
     return fail("Something went wrong during Discord login.");
   }
 }
