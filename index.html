@@ -4,34 +4,60 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#09090b">
   <title>Sphynx Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
   <!-- LOGIN SCREEN -->
   <main id="loginScreen">
-    <div class="login-card">
-      <h1>SPHYNX</h1>
-      <p>Welcome to Sphynx</p>
+    <div class="login-background"></div>
+
+    <section class="login-card">
+      <div class="sphynx-logo">S</div>
+
+      <div class="login-brand">SPHYNX</div>
+      <div class="login-label">DASHBOARD ACCESS</div>
+
+      <h1>Welcome back.</h1>
+
       <p class="login-description">
-        Login with Discord to access your dashboard.
+        Sign in with your Discord account to manage your server and access Sphynx tools.
       </p>
 
       <a href="/oauth/login" id="discordLogin" class="discord-button">
-        Login with Discord
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="currentColor" d="M19.7 5.3A19 19 0 0 0 15 3.8l-.6 1.2a17 17 0 0 0-4.8 0L9 3.8a19 19 0 0 0-4.7 1.5C1.3 9.7.5 14 .9 18.2a19 19 0 0 0 5.8 3l1.2-2a12 12 0 0 1-1.9-.9l.5-.4a13 13 0 0 0 11 0l.5.4-1.9.9 1.2 2a19 19 0 0 0 5.8-3c.5-4.9-.8-9.2-3.4-12.9ZM8.7 15.3c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2Zm6.6 0c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2Z"/>
+        </svg>
+        Continue with Discord
       </a>
 
       <p id="loginError" class="error-message" hidden></p>
-    </div>
+
+      <div class="login-divider"></div>
+
+      <div class="login-security">
+        <span class="security-dot"></span>
+        Secure authentication powered by Discord
+      </div>
+    </section>
+
+    <footer class="login-footer">
+      © 2026 SPHYNX. All rights reserved.
+    </footer>
   </main>
 
   <!-- DASHBOARD -->
   <div id="appContent" hidden>
 
     <header class="topbar">
-      <button id="menuToggle">☰</button>
+      <button id="menuToggle" aria-label="Toggle menu">☰</button>
       <h2>SPHYNX</h2>
+
       <div class="user-area">
         <span id="username">Loading...</span>
         <button id="logoutButton">Logout</button>
@@ -85,6 +111,7 @@
       <div class="modal-content">
         <button id="closeTicketModal" class="close-button">×</button>
         <h2>Open a Support Ticket</h2>
+
         <form id="ticketForm">
           <label for="ticketSubject">Subject</label>
           <input id="ticketSubject" required maxlength="100">
