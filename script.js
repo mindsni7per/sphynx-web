@@ -8,6 +8,11 @@ const usernameDisplay = document.getElementById("username");
 
 document.getElementById("discordLogin").href = LOGIN_URL;
 
+function showLoginError(message) {
+  loginError.textContent = message;
+  loginError.hidden = false;
+}
+
 // AUTHENTICATION
 async function checkLogin() {
   try {
@@ -17,14 +22,16 @@ async function checkLogin() {
       cache: "no-store"
     });
 
-    if (!response.ok) throw new Error("Login check failed");
+    if (!response.ok) {
+      throw new Error("Login check failed");
+    }
 
     const session = await response.json();
 
     if (session.authenticated === true) {
       loginScreen.hidden = true;
       appContent.hidden = false;
-      usernameDisplay.textContent = session.username;
+      usernameDisplay.textContent = session.username || "Discord User";
     } else {
       loginScreen.hidden = false;
       appContent.hidden = true;
@@ -36,12 +43,7 @@ async function checkLogin() {
   }
 }
 
-function showLoginError(message) {
-  loginError.textContent = message;
-  loginError.hidden = false;
-}
-
-// DISCORD LOGIN ERRORS
+// LOGIN ERRORS
 const params = new URLSearchParams(window.location.search);
 const error = params.get("error");
 
@@ -53,10 +55,14 @@ if (error) {
 // LOGOUT
 document.getElementById("logoutButton").addEventListener("click", async () => {
   try {
-    await fetch("/api/logout", {
+    const response = await fetch("/api/logout", {
       method: "POST",
       credentials: "include"
     });
+
+    if (!response.ok) {
+      throw new Error("Logout failed");
+    }
 
     window.location.reload();
   } catch {
@@ -86,7 +92,9 @@ document.querySelectorAll(".nav-item").forEach(button => {
 
     const selectedPage = document.getElementById(button.dataset.page);
 
-    if (selectedPage) selectedPage.hidden = false;
+    if (selectedPage) {
+      selectedPage.hidden = false;
+    }
 
     sidebar.classList.remove("open");
   });
