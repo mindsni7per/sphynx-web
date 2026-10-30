@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sphynx — Multipurpose Discord Bot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            900: '#0b0c0e',
+                            800: '#121418',
+                            700: '#1a1d24',
+                            600: '#262932',
+                            500: '#2f3136'
+                        },
+                        accent: {
+                            purple: '#8a70ff',
+                            lavender: '#b19fff',
+                            pink: '#ff70b3'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0b0c0e; color: #e2e8f0; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #121418; }
+        ::-webkit-scrollbar-thumb { background: #262932; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #8a70ff; }
+        .glass-panel { background: rgba(26, 29, 36, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-purple-500 selection:text-white">
+
+    <!-- LOGIN GATE OVERLAY (Forces Login before viewing) -->
+    <div id="auth-gate" class="fixed inset-0 z-50 bg-[#0b0c0e] flex items-center justify-center p-4">
+        <div class="glass-panel p-8 rounded-2xl max-w-md w-full text-center shadow-2xl border border-white/10">
+            <div class="w-20 h-20 mx-auto mb-6 rounded-2xl overflow-hidden border border-white/20 shadow-lg">
+                <img src="image_7.png" alt="Sphynx Logo" class="w-full h-full object-cover">
+            </div>
+            <h1 class="text-2xl font-bold mb-2 text-white">Welcome to Sphynx</h1>
+            <p class="text-gray-400 text-sm mb-6">Log in with your Discord account to access the control panel, configure server systems, and manage your bot.</p>
+            <button onclick="loginWithDiscord()" class="w-full py-3 px-4 bg-[#5865F2] hover:bg-[#4752C4] text-white font-semibold rounded-xl flex items-center justify-center gap-3 transition-all shadow-lg shadow-[#5865F2]/20">
+                <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.927 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+                Login with Discord
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN APP CONTAINER -->
+    <div id="main-app" class="hidden flex-col min-h-screen">
+        
+        <!-- NAVBAR -->
+        <header class="sticky top-0 z-40 glass-panel border-b border-white/5 px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="switchView('landing')">
+                <div class="w-10 h-10 rounded-xl overflow-hidden border border-white/20">
+                    <img src="image_7.png" alt="Sphynx" class="w-full h-full object-cover">
+                </div>
+                <span class="font-extrabold text-lg tracking-wider text-white">SPHYNX</span>
+            </div>
+            <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-gray-300">
+                <button onclick="switchView('landing')" class="hover:text-white transition">Home</button>
+                <button onclick="switchView('commands')" class="hover:text-white transition">Commands</button>
+                <button onclick="switchView('dashboard-select')" class="hover:text-white transition">Dashboard</button>
+                <a href="https://discord.com/oauth2/authorize?client_id=1565830503817551923&permissions=8&integration_type=0&scope=applications.commands+bot" target="_blank" class="hover:text-white transition">Invite Bot</a>
+            </nav>
+            <div class="flex items-center gap-4">
+                <div id="user-profile-btn" class="flex items-center gap-3 bg-dark-700 py-1.5 px-3 rounded-full border border-white/5 cursor-pointer" onclick="toggleUserDropdown()">
+                    <img id="nav-avatar" src="" alt="Avatar" class="w-7 h-7 rounded-full object-cover">
+                    <span id="nav-username" class="text-xs font-semibold text-white">User</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- VIEW: LANDING PAGE -->
+        <div id="view-landing" class="flex-flex flex-col">
+            <!-- HERO SECTION -->
+            <section class="relative py-20 px-6 text-center overflow-hidden border-b border-white/5">
+                <div class="absolute inset-0 z-0 opacity-20 pointer-events-none">
+                    <img src="image_8.png" alt="Banner" class="w-full h-full object-cover">
+                </div>
+                <div class="relative z-10 max-w-3xl mx-auto">
+                    <span class="inline-block py-1 px-3 rounded-full bg-accent-purple/10 text-accent-lavender text-xs font-semibold mb-6 border border-accent-purple/20">Multipurpose Discord Bot</span>
+                    <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight text-white mb-6">Sphynx</h1>
+                    <p class="text-xl md:text-2xl font-medium text-accent-lavender mb-4">“A little personality. A lot of power.”</p>
+                    <p class="text-gray-400 text-base max-w-xl mx-auto mb-8">Everything your Discord server needs. Moderation, protection, automation, tickets, applications and more — all in one bot.</p>
+                    <div class="flex flex-wrap justify-center gap-4">
+                        <a href="https://discord.com/oauth2/authorize?client_id=1565830503817551923&permissions=8&integration_type=0&scope=applications.commands+bot" target="_blank" class="py-3 px-8 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold rounded-xl shadow-lg transition transform hover:-translate-y-0.5">Add to Discord</a>
+                        <button onclick="switchView('dashboard-select')" class="py-3 px-8 bg-dark-600 hover:bg-dark-500 text-white font-bold rounded-xl border border-white/10 transition">Explore Dashboard</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FEATURES GRID -->
+            <section class="py-20 px-6 max-w-7xl mx-auto">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl font-bold text-white mb-3">Powerful Built-In Modules</h2>
+                    <p class="text-gray-400 text-sm">Configure everything easily from our dashboard.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="glass-panel p-6 rounded-2xl border border-white/5 hover:border-accent-purple/30 transition">
+                        <h3 class="text-lg font-bold text-white mb-2">Advanced Moderation</h3>
+                        <p class="text-gray-400 text-sm">Comprehensive moderation action logging, timeouts, bans, and proof tracking.</p>
+                    </div>
+                    <div class="glass-panel p-6 rounded-2xl border border-white/5 hover:border-accent-purple/30 transition">
+                        <h3 class="text-lg font-bold text-white mb-2">Security & Antinuke</h3>
+                        <p class="text-gray-400 text-sm">Protect your server from malicious channel deletions, mass bans, and permission exploits.</p>
+                    </div>
+                    <div class="glass-panel p-6 rounded-2xl border border-white/5 hover:border-accent-purple/30 transition">
+                        <h3 class="text-lg font-bold text-white mb-2">Antiraid Protection</h3>
+                        <p class="text-gray-400 text-sm">Automatic join limits, lockdown triggers, and suspicious account filtering.</p>
+                    </div>
+                    <div class="glass-panel p-6 rounded-2xl border border-white/5 hover:border-accent-purple/30 transition">
+                        <h3 class="text-lg font-bold text-white mb-2">Ticket Management</h3>
+                        <p class="text-gray-400 text-sm">Custom panels, dropdown menus, support role assignments, and transcripts.</p>
+                    </div>
+                    <div class="glass-panel p-6 rounded-2xl border border-white/5 hover:border-accent-purple/30 transition">
+                        <h3 class="text-lg font-bold text-white mb-2">Application System</h3>
+                        <p class="text-gray-400 text-sm">Custom questions, automatic role rewards on approval, and review workflows.</p>
+                    </div>
+                    <div class="glass-panel p-6 rounded-2xl border border-white/5 hover:border-accent-purple/30 transition">
+                        <h3 class="text-lg font-bold text-white mb-2">Invite Tracking</h3>
+                        <p class="text-gray-400 text-sm">Detailed invite logs, tracking regular, fake, and left members with leaderboards.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- VIEW: COMMAND DIRECTORY -->
+        <div id="view-commands" class="hidden flex-1 max-w-5xl mx-auto w-full p-6">
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-white mb-2">Command Directory</h1>
+                <p class="text-gray-400 text-sm">Explore all available slash commands for Sphynx.</p>
+            </div>
+            <div class="space-y-4">
+                <div class="glass-panel p-5 rounded-xl border border-white/5">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="font-mono text-accent-lavender font-bold text-base">/action</span>
+                        <span class="text-xs bg-dark-600 py-1 px-2.5 rounded-md text-gray-300">Moderation</span>
+                    </div>
+                    <p class="text-gray-300 text-sm mb-2">Add or remove moderation actions, attach proof and manage member punishments.</p>
+                </div>
+                <div class="glass-panel p-5 rounded-xl border border-white/5">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="font-mono text-accent-lavender font-bold text-base">/lookup</span>
+                        <span class="text-xs bg-dark-600 py-1 px-2.5 rounded-md text-gray-300">Moderation</span>
+                    </div>
+                    <p class="text-gray-300 text-sm mb-2">View a member's complete moderation history.</p>
+                </div>
+                <div class="glass-panel p-5 rounded-xl border border-white/5">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="font-mono text-accent-lavender font-bold text-base">/setup</span>
+                        <span class="text-xs bg-dark-600 py-1 px-2.5 rounded-md text-gray-300">Tickets & Panels</span>
+                    </div>
+                    <p class="text-gray-300 text-sm mb-2">Publish a ticket, application, invite or welcome panel.</p>
+                </div>
+                <div class="glass-panel p-5 rounded-xl border border-white/5">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="font-mono text-accent-lavender font-bold text-base">/botinfo</span>
+                        <span class="text-xs bg-dark-600 py-1 px-2.5 rounded-md text-gray-300">General</span>
+                    </div>
+                    <p class="text-gray-300 text-sm mb-2">View uptime, developer, versions and live statistics.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: SERVER SELECTOR -->
+        <div id="view-dashboard-select" class="hidden flex-1 max-w-5xl mx-auto w-full p-6">
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-white mb-2">Select a Server</h1>
+                <p class="text-gray-400 text-sm">Choose a server where you have administrator permissions to manage settings.</p>
+            </div>
+            <div id="server-list-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dynamically populated servers -->
+            </div>
+        </div>
+
+        <!-- VIEW: SERVER DASHBOARD -->
+        <div id="view-server-dashboard" class="hidden flex-1 flex flex-col md:flex-row">
+            <!-- Sidebar -->
+            <aside class="w-full md:w-64 glass-panel border-r border-white/5 p-4 flex flex-col gap-2">
+                <div class="flex items-center gap-3 p-3 bg-dark-700 rounded-xl mb-4 border border-white/5">
+                    <img id="dash-server-icon" src="" alt="Server" class="w-10 h-10 rounded-lg object-cover">
+                    <div>
+                        <h4 id="dash-server-name" class="text-sm font-bold text-white truncate w-36">Server Name</h4>
+                        <span class="text-xs text-green-400 font-medium">● Online</span>
+                    </div>
+                </div>
+                <button onclick="switchTab('overview')" class="dash-tab-btn w-full text-left py-2.5 px-3 rounded-lg text-sm font-medium text-white bg-accent-purple/20 border border-accent-purple/30">Overview</button>
+                <button onclick="switchTab('moderation')" class="dash-tab-btn w-full text-left py-2.5 px-3 rounded-lg text-sm font-medium text-gray-400 hover:text-white hover:bg-dark-600 transition">Moderation</button>
+                <button onclick="switchTab('tickets')" class="dash-tab-btn w-full text-left py-2.5 px-3 rounded-lg text-sm font-medium text-gray-400 hover:text-white hover:bg-dark-600 transition">Ticket System</button>
+                <button onclick="switchTab('applications')" class="dash-tab-btn w-full text-left py-2.5 px-3 rounded-lg text-sm font-medium text-gray-400 hover:text-white hover:bg-dark-600 transition">Application System</button>
+                <button onclick="switchTab('security')" class="dash-tab-btn w-full text-left py-2.5 px-3 rounded-lg text-sm font-medium text-gray-400 hover:text-white hover:bg-dark-600 transition">Security & Antinuke</button>
+                <button onclick="switchTab('welcome')" class="dash-tab-btn w-full text-left py-2.5 px-3 rounded-lg text-sm font-medium text-gray-400 hover:text-white hover:bg-dark-600 transition">Welcome System</button>
+                <button onclick="switchTab('invites')" class="dash-tab-btn w-full text-left py-2.5 px-3 rounded-lg text-sm font-medium text-gray-400 hover:text-white hover:bg-dark-600 transition">Invite Tracker</button>
+            </aside>
+
+            <!-- Dashboard Content Area -->
+            <main class="flex-1 p-6 overflow-y-auto">
+                
+                <!-- TAB: OVERVIEW -->
+                <div id="tab-overview" class="dash-content space-y-6">
+                    <h2 class="text-2xl font-bold text-white mb-4">Server Overview</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div class="glass-panel p-5 rounded-xl border border-white/5">
+                            <span class="text-xs text-gray-400 font-medium">Total Members</span>
+                            <h3 id="stat-members" class="text-2xl font-bold text-white mt-1">1,284</h3>
+                        </div>
+                        <div class="glass-panel p-5 rounded-xl border border-white/5">
+                            <span class="text-xs text-gray-400 font-medium">Moderation Actions</span>
+                            <h3 id="stat-actions" class="text-2xl font-bold text-white mt-1">42</h3>
+                        </div>
+                        <div class="glass-panel p-5 rounded-xl border border-white/5">
+                            <span class="text-xs text-gray-400 font-medium">Active Tickets</span>
+                            <h3 id="stat-tickets" class="text-2xl font-bold text-white mt-1">5</h3>
+                        </div>
+                        <div class="glass-panel p-5 rounded-xl border border-white/5">
+                            <span class="text-xs text-gray-400 font-medium">Pending Apps</span>
+                            <h3 id="stat-apps" class="text-2xl font-bold text-white mt-1">3</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB: MODERATION -->
+                <div id="tab-moderation" class="dash-content hidden space-y-6">
+                    <h2 class="text-2xl font-bold text-white mb-4">Moderation Management</h2>
+                    <div class="glass-panel p-6 rounded-xl border border-white/5 space-y-4">
+                        <h3 class="text-lg font-bold text-white">General Settings</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-300 mb-1">Mute Role ID</label>
+                                <input type="text" id="mod-mute-role" class="w-full bg-dark-800 border border-white/10 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-accent-purple" placeholder="Role ID">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-300 mb-1">Moderation Log Channel</label>
+                                <input type="text" id="mod-log-channel" class="w-full bg-dark-800 border border-white/10 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-accent-purple" placeholder="Channel ID">
+                            </div>
+                        </div>
+                        <button onclick="saveSettings('Moderation settings saved!')" class="py-2 px-4 bg-accent-purple hover:bg-purple-600 text-white font-semibold rounded-lg text-sm transition">Save Changes</button>
+                    </div>
+                </div>
+
+                <!-- TAB: TICKETS -->
+                <div id="tab-tickets" class="dash-content hidden space-y-6">
+                    <h2 class="text-2xl font-bold text-white mb-4">Ticket System Builder</h2>
+                    <div class="glass-panel p-6 rounded-xl border border-white/5 space-y-4">
+                        <h3 class="text-lg font-bold text-white">Panel Configuration</h3>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-300 mb-1">Ticket Style</label>
+                            <select id="ticket-style" class="w-full bg-dark-800 border border-white/10 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-accent-purple">
+                                <option value="button">Normal Button Panel</option>
+                                <option value="dropdown">Dropdown Menu Panel</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-300 mb-1">Support Roles (Comma separated IDs)</label>
+                            <input type="text" id="ticket-roles" class="w-full bg-dark-800 border border-white/10 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-accent-purple" placeholder="123456789, 987654321">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-300 mb-1">Custom Questions (One per line)</label>
+                            <textarea id="ticket-questions" rows="3" class="w-full bg-dark-800 border border-white/10 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-accent-purple" placeholder="What is your issue?&#10;Provide proof if applicable."></textarea>
+                        </div>
+                        <button onclick="saveSettings('Ticket panel saved and deployed!')" class="py-2 px-4 bg-accent-purple hover:bg-purple-600 text-white font-semibold rounded-lg text-sm transition">Publish Ticket Panel</button>
+                    </div>
+                </div>
+
+                <!-- TAB: APPLICATIONS -->
+                <div id="tab-applications" class="dash-content hidden space-y-6">
+                    <h2 class="text-2xl font-bold text-white mb-4">Application System Builder</h2>
+                    <div class="glass-panel p-6 rounded-xl border border-white/5 space-y-4">
+                        <h3 class="text-lg font-bold text-white">Application Settings</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-300 mb-1">Role Given on Approval</label>
+                                <input type="text" id="app-role-give" class="w-full bg-dark-800 border border-white/10 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-accent-purple" placeholder="Role ID">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-300 mb-1">Role Forbidden (Blacklisted)</label>
+                                <input type="text" id="app-role-forbidden" class="w-full bg-dark-800 border border-white/10 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-accent-purple" placeholder="Role ID">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-300 mb-1">Application Categories / Questions</label>
+                            <textarea id="app-questions" rows="3" class="w-full bg-dark-800 border border-white/10 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-accent-purple" placeholder="Why do you want to join staff?&#10;What is your age?"></textarea>
+                        </div>
+                        <button onclick="saveSettings('Application system saved successfully!')" class="py-2 px-4 bg-accent-purple hover:bg-purple-600 text-white font-semibold rounded-lg text-sm transition">Save Application Settings</button>
+                    </div>
+                </div>
+
+                <!-- TAB: SECURITY -->
+                <div id="tab-security" class="dash-content hidden space-y-6">
+                    <h2 class="text-2xl font-bold text-white mb-4">Security & Protection</h2>
+                    <div class="glass-panel p-6 rounded-xl border border-white/5 space-y-4">
+                        <h3 class="text-lg font-bold text-white">Antinuke & Antiraid</h3>
+                        <div class="flex items-center justify-between p-3 bg-dark-800 rounded-lg border border-white/5">
+                            <div>
+                                <h4 class="text-sm font-bold text-white">Antinuke Protection</h4>
+                                <p class="text-xs text-gray-400">Prevent mass channel deletions and unauthorized admin actions.</p>
+                            </div>
+                            <input type="checkbox" id="security-antinuke" class="w-5 h-5 accent-purple-500">
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-dark-800 rounded-lg border border-white/5">
+                            <div>
+                                <h4 class="text-sm font-bold text-white">Antiraid Lockdown</h4>
+                                <p class="text-xs text-gray-400">Automatically lockdown server upon join spikes.</p>
+                            </div>
+                            <input type="checkbox" id="security-antiraid" class="w-5 h-5 accent-purple-500">
+                        </div>
+                        <button onclick="saveSettings('Security settings updated!')" class="py-2 px-4 bg-accent-purple hover:bg-purple-600 text-white font-semibold rounded-lg text-sm transition">Save Security Settings</button>
+                    </div>
+                </div>
+
+                <!-- TAB: WELCOME -->
+                <div id="tab-welcome" class="dash-content hidden space-y-6">
+                    <h2 class="text-2xl font-bold text-white mb-4">Welcome System</h2>
+                    <div class="glass-panel p-6 rounded-xl border border-white/5 space-y-4">
+                        <h3 class="text-lg font-bold text-white">Welcome Message</h3>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-300 mb-1">Welcome Channel ID</label>
+                            <input type="text" id="welcome-channel" class="w-full bg-dark-800 border border-white/10 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-accent-purple" placeholder="Channel ID">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-300 mb-1">Message Template (Variables: {user}, {server}, {member.count})</label>
+                            <textarea id="welcome-msg" rows="2" class="w-full bg-dark-800 border border-white/10 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-accent-purple">Welcome {user} to {server}!</textarea>
+                        </div>
+                        <button onclick="saveSettings('Welcome message saved!')" class="py-2 px-4 bg-accent-purple hover:bg-purple-600 text-white font-semibold rounded-lg text-sm transition">Save Welcome Settings</button>
+                    </div>
+                </div>
+
+                <!-- TAB: INVITES -->
+                <div id="tab-invites" class="dash-content hidden space-y-6">
+                    <h2 class="text-2xl font-bold text-white mb-4">Invite Tracker</h2>
+                    <div class="glass-panel p-6 rounded-xl border border-white/5 space-y-4">
+                        <h3 class="text-lg font-bold text-white">Invite Settings</h3>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-300 mb-1">Invite Log Channel ID</label>
+                            <input type="text" id="invite-channel" class="w-full bg-dark-800 border border-white/10 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-accent-purple" placeholder="Channel ID">
+                        </div>
+                        <button onclick="saveSettings('Invite tracker saved!')" class="py-2 px-4 bg-accent-purple hover:bg-purple-600 text-white font-semibold rounded-lg text-sm transition">Save Settings</button>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+
+    </div>
+
+    <script>
+        // Simulated User Session Data
+        let currentUser = null;
+        let selectedServer = null;
+
+        const mockServers = [
+            { id: '101', name: 'SNIPER\'S EMPIRE', icon: 'image_7.png', owner: true, permissions: 8, botInstalled: true },
+            { id: '102', name: 'Flex Network', icon: 'image_8.png', owner: true, permissions: 8, botInstalled: true },
+            { id: '103', name: 'Trading & Middleman Hub', icon: 'image_7.png', owner: false, permissions: 0, botInstalled: false }
+        ];
+
+        function loginWithDiscord() {
+            // Simulated login flow
+            currentUser = {
+                username: 'Sniper',
+                avatar: 'image_7.png'
+            };
+            document.getElementById('nav-avatar').src = currentUser.avatar;
+            document.getElementById('nav-username').textContent = currentUser.username;
+            
+            document.getElementById('auth-gate').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
+            document.getElementById('main-app').classList.add('flex');
+            switchView('landing');
+        }
+
+        function switchView(viewName) {
+            document.getElementById('view-landing').classList.add('hidden');
+            document.getElementById('view-commands').classList.add('hidden');
+            document.getElementById('view-dashboard-select').classList.add('hidden');
+            document.getElementById('view-server-dashboard').classList.add('hidden');
+
+            if (viewName === 'landing') {
+                document.getElementById('view-landing').classList.remove('hidden');
+            } else if (viewName === 'commands') {
+                document.getElementById('view-commands').classList.remove('hidden');
+            } else if (viewName === 'dashboard-select') {
+                document.getElementById('view-dashboard-select').classList.remove('hidden');
+                renderServerList();
+            } else if (viewName === 'server-dashboard') {
+                document.getElementById('view-server-dashboard').classList.remove('hidden');
+                document.getElementById('view-server-dashboard').classList.add('flex');
+            }
+        }
+
+        function renderServerList() {
+            const container = document.getElementById('server-list-container');
+            container.innerHTML = '';
+            mockServers.forEach(server => {
+                const card = document.createElement('div');
+                card.className = 'glass-panel p-6 rounded-2xl border border-white/5 flex flex-col justify-between';
+                card.innerHTML = `
+                    <div class="flex items-center gap-4 mb-4">
+                        <img src="${server.icon}" alt="Icon" class="w-12 h-12 rounded-xl object-cover border border-white/10">
+                        <div>
+                            <h3 class="font-bold text-white text-base">${server.name}</h3>
+                            <span class="text-xs ${server.permissions & 8 ? 'text-green-400' : 'text-gray-500'}">${server.permissions & 8 ? 'Administrator' : 'No Permission'}</span>
+                        </div>
+                    </div>
+                    <div>
+                        ${server.botInstalled && (server.permissions & 8) ? 
+                            `<button onclick="openServerDashboard('${server.id}')" class="w-full py-2.5 bg-accent-purple hover:bg-purple-600 text-white font-semibold rounded-xl text-sm transition">Configure</button>` :
+                            `<a href="https://discord.com/oauth2/authorize?client_id=1565830503817551923&permissions=8&integration_type=0&scope=applications.commands+bot" target="_blank" class="block text-center w-full py-2.5 bg-dark-600 hover:bg-dark-500 text-white font-semibold rounded-xl text-sm transition">Add Bot</a>`
+                        }
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function openServerDashboard(serverId) {
+            selectedServer = mockServers.find(s => s.id === serverId);
+            document.getElementById('dash-server-name').textContent = selectedServer.name;
+            document.getElementById('dash-server-icon').src = selectedServer.icon;
+            switchView('server-dashboard');
+            switchTab('overview');
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.dash-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.dash-tab-btn').forEach(el => {
+                el.classList.remove('bg-accent-purple/20', 'border', 'accent-purple/30', 'text-white');
+                el.classList.add('text-gray-400');
+            });
+            
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+            event.target.classList.add('bg-accent-purple/20', 'border', 'border-accent-purple/30', 'text-white');
+            event.target.classList.remove('text-gray-400');
+        }
+
+        function saveSettings(msg) {
+            alert(msg);
+        }
+    </script>
+</body>
+</html>
