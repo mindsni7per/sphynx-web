@@ -1,4 +1,7 @@
-import { clearSessionCookie } from "../_lib/auth.js";
+
+import {
+  clearSessionCookie
+} from "../_lib/auth.js";
 
 export async function onRequestPost() {
   return new Response(
