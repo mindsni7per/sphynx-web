@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sphynx — Discord Bot Management Platform</title>
+    <title>Sphynx Dashboard</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -11,547 +12,175 @@
             theme: {
                 extend: {
                     colors: {
-                        dark: {
-                            900: '#0b0c0e',
-                            800: '#121418',
-                            700: '#1a1d24',
-                            600: '#262932',
-                            500: '#2f3136'
-                        },
-                        accent: {
-                            purple: '#8a70ff',
-                            lavender: '#b19fff',
-                            pink: '#ff70b3'
-                        }
+                        darkbg: '#0b0c10',
+                        cardbg: '#121318',
+                        accent: '#8b5cf6',
+                        accenthover: '#7c3aed'
                     }
                 }
             }
         }
     </script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0b0c0e; color: #e2e8f0; scroll-behavior: smooth; }
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #121418; }
-        ::-webkit-scrollbar-thumb { background: #262932; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #8a70ff; }
-        .glass-panel { background: rgba(26, 29, 36, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
-    </style>
 </head>
-<body class="min-h-screen flex flex-col selection:bg-purple-500 selection:text-white">
+<body class="bg-darkbg text-gray-100 font-sans antialiased min-h-screen">
 
-    <!-- MANDATORY REAL DISCORD OAUTH2 AUTHENTICATION GATE -->
-    <div id="auth-gate" class="fixed inset-0 z-50 bg-[#0b0c0e] flex items-center justify-center p-4">
-        <div class="glass-panel p-8 rounded-2xl max-w-md w-full text-center shadow-2xl border border-white/10">
-            <div class="w-20 h-20 mx-auto mb-6 rounded-2xl overflow-hidden border border-white/20 shadow-lg">
-                <img src="image_7.png" alt="Sphynx Logo" class="w-full h-full object-cover">
-            </div>
-            <h1 class="text-2xl font-bold mb-2 text-white">Welcome to Sphynx</h1>
-            <p class="text-gray-400 text-sm mb-6">Authenticate via Discord OAuth2 to access server configurations and interactive wizards.</p>
-            <a href="https://discord.com/oauth2/authorize?client_id=1565830503817551923&response_type=code&redirect_uri=https%3A%2F%2Fsphynxweb.pages.dev&scope=identify" class="w-full py-3 px-4 bg-[#5865F2] hover:bg-[#4752C4] text-white font-semibold rounded-xl flex items-center justify-center gap-3 transition-all shadow-lg shadow-[#5865F2]/20 no-underline cursor-pointer">
-                <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.927 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
-                Login with Discord
-            </a>
+    <!-- Top Navigation Bar -->
+    <header class="border-b border-gray-800 bg-cardbg/50 backdrop-blur sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+            <div class="bg-gray-800 border border-gray-700 p-2 rounded-lg text-xs font-bold">[?]</div>
+            <span class="font-bold text-lg tracking-wide">SPHYNX</span>
         </div>
-    </div>
+        <div class="flex items-center space-x-2 bg-gray-900 border border-gray-800 px-3 py-1.5 rounded-full text-sm">
+            <span class="bg-gray-800 p-1 rounded text-xs">[?]</span>
+            <span class="font-medium text-gray-300">Sniper</span>
+        </div>
+    </header>
 
-    <!-- MAIN APP CONTAINER -->
-    <div id="main-app" class="hidden flex-col min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 md:grid-cols-4 gap-8">
         
-        <!-- NAVBAR -->
-        <header class="sticky top-0 z-40 glass-panel border-b border-white/5 px-6 py-4 flex items-center justify-between">
-            <div class="flex items-center gap-3 cursor-pointer" onclick="switchView('landing')">
-                <div class="w-10 h-10 rounded-xl overflow-hidden border border-white/20">
-                    <img src="image_7.png" alt="Sphynx" class="w-full h-full object-cover">
-                </div>
-                <span class="font-extrabold text-lg tracking-wider text-white">SPHYNX</span>
-            </div>
-            <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-gray-300">
-                <button onclick="switchView('landing')" class="hover:text-white transition cursor-pointer">Home</button>
-                <button onclick="switchView('commands')" class="hover:text-white transition cursor-pointer">Commands</button>
-                <button onclick="switchView('dashboard-select')" class="hover:text-white transition cursor-pointer">Dashboard</button>
-                <a href="https://discord.com/oauth2/authorize?client_id=1565830503817551923&permissions=8&integration_type=0&scope=applications.commands+bot" target="_blank" class="hover:text-white transition">Invite Bot</a>
-            </nav>
-            <div class="flex items-center gap-4">
-                <div class="flex items-center gap-3 bg-dark-700 py-1.5 px-3 rounded-full border border-white/5">
-                    <img id="nav-avatar" src="image_7.png" alt="Avatar" class="w-7 h-7 rounded-full object-cover border border-white/20">
-                    <span id="nav-username" class="text-xs font-semibold text-white">Sniper</span>
+        <!-- Sidebar Navigation -->
+        <aside class="space-y-2 md:col-span-1">
+            <!-- Active Bot Card -->
+            <div class="bg-cardbg border border-gray-800 p-4 rounded-xl mb-6">
+                <div class="flex items-center space-x-3 mb-2">
+                    <div class="bg-gray-800 p-2 rounded text-xs">[?]</div>
+                    <div>
+                        <h4 class="font-semibold text-sm">Flex Network</h4>
+                        <p class="text-xs text-emerald-400 flex items-center gap-1.5 mt-0.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Bot Active
+                        </p>
+                    </div>
                 </div>
             </div>
-        </header>
 
-        <!-- VIEW: LANDING PAGE -->
-        <div id="view-landing" class="flex flex-col flex-1">
-            <section class="relative py-20 px-6 text-center overflow-hidden border-b border-white/5">
-                <div class="absolute inset-0 z-0 opacity-20 pointer-events-none">
-                    <img src="image_8.png" alt="Banner" class="w-full h-full object-cover">
+            <!-- Menu Links -->
+            <nav class="space-y-1">
+                <button onclick="switchTab('overview')" id="btn-overview" class="w-full text-left px-4 py-3 rounded-xl font-medium text-sm transition bg-accent text-white">Overview</button>
+                <button onclick="switchTab('ticket')" id="btn-ticket" class="w-full text-left px-4 py-3 rounded-xl font-medium text-sm text-gray-400 hover:bg-gray-900 hover:text-white transition">Ticket System Wizard</button>
+                <button onclick="switchTab('application')" id="btn-application" class="w-full text-left px-4 py-3 rounded-xl font-medium text-sm text-gray-400 hover:bg-gray-900 hover:text-white transition">Application Wizard</button>
+                <button onclick="switchTab('welcome')" id="btn-welcome" class="w-full text-left px-4 py-3 rounded-xl font-medium text-sm text-gray-400 hover:bg-gray-900 hover:text-white transition">Welcome Wizard</button>
+                <button onclick="switchTab('antiraid')" id="btn-antiraid" class="w-full text-left px-4 py-3 rounded-xl font-medium text-sm text-gray-400 hover:bg-gray-900 hover:text-white transition">Anti-Raid Wizard</button>
+                <button onclick="switchTab('antinuke')" id="btn-antinuke" class="w-full text-left px-4 py-3 rounded-xl font-medium text-sm text-gray-400 hover:bg-gray-900 hover:text-white transition">Anti-Nuke Wizard</button>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area / Wizards -->
+        <main class="md:col-span-3 space-y-6">
+
+            <!-- TAB 1: OVERVIEW -->
+            <section id="tab-overview" class="tab-content space-y-6">
+                <div>
+                    <h1 class="text-3xl font-extrabold tracking-tight">Server Management Overview</h1>
+                    <p class="text-gray-400 text-sm mt-1">Select any module on the sidebar to instantly teleport to its configuration wizard.</p>
                 </div>
-                <div class="relative z-10 max-w-3xl mx-auto">
-                    <span class="inline-block py-1 px-3 rounded-full bg-accent-purple/10 text-accent-lavender text-xs font-semibold mb-6 border border-accent-purple/20">Multipurpose Discord Bot</span>
-                    <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight text-white mb-6">Sphynx</h1>
-                    <p class="text-xl md:text-2xl font-medium text-accent-lavender mb-4">“A little personality. A lot of power.”</p>
-                    <p class="text-gray-400 text-base max-w-xl mx-auto mb-8">Everything your Discord server needs. Moderation, protection, tickets, applications, and custom wizards all in one bot.</p>
-                    <div class="flex flex-wrap justify-center gap-4">
-                        <a href="https://discord.com/oauth2/authorize?client_id=1565830503817551923&permissions=8&integration_type=0&scope=applications.commands+bot" target="_blank" class="py-3 px-8 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold rounded-xl shadow-lg transition transform hover:-translate-y-0.5">Add to Discord</a>
-                        <button onclick="switchView('dashboard-select')" class="py-3 px-8 bg-dark-600 hover:bg-dark-500 text-white font-bold rounded-xl border border-white/10 transition cursor-pointer">Explore Dashboard</button>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="bg-cardbg border border-gray-800 p-6 rounded-xl">
+                        <p class="text-xs text-gray-400 font-medium uppercase tracking-wider">Total Members</p>
+                        <p class="text-3xl font-bold mt-2">1,420</p>
+                    </div>
+                    <div class="bg-cardbg border border-gray-800 p-6 rounded-xl">
+                        <p class="text-xs text-gray-400 font-medium uppercase tracking-wider">Wizards Status</p>
+                        <p class="text-3xl font-bold mt-2 text-white">Ready</p>
+                    </div>
+                    <div class="bg-cardbg border border-gray-800 p-6 rounded-xl">
+                        <p class="text-xs text-gray-400 font-medium uppercase tracking-wider">Bot Connection</p>
+                        <p class="text-xl font-bold mt-3 text-emerald-400">Online & Ready</p>
                     </div>
                 </div>
             </section>
-        </div>
 
-        <!-- VIEW: COMMAND DIRECTORY -->
-        <div id="view-commands" class="hidden flex-1 max-w-5xl mx-auto w-full p-6">
-            <div class="mb-8">
-                <h1 class="text-3xl font-bold text-white mb-2">Command Directory</h1>
-                <p class="text-gray-400 text-sm">Explore all available slash commands for Sphynx.</p>
-            </div>
-            <div class="space-y-4">
-                <div class="glass-panel p-5 rounded-xl border border-white/5">
-                    <div class="flex justify-between items-start mb-2">
-                        <span class="font-mono text-accent-lavender font-bold text-base">/action</span>
-                        <span class="text-xs bg-dark-600 py-1 px-2.5 rounded-md text-gray-300">Moderation</span>
-                    </div>
-                    <p class="text-gray-300 text-sm mb-2">Add or remove moderation actions, attach proof and manage member punishments.</p>
-                </div>
-                <div class="glass-panel p-5 rounded-xl border border-white/5">
-                    <div class="flex justify-between items-start mb-2">
-                        <span class="font-mono text-accent-lavender font-bold text-base">/setup</span>
-                        <span class="text-xs bg-dark-600 py-1 px-2.5 rounded-md text-gray-300">Panels</span>
-                    </div>
-                    <p class="text-gray-300 text-sm mb-2">Publish a ticket, application, invite or welcome panel.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- VIEW: SERVER SELECTOR -->
-        <div id="view-dashboard-select" class="hidden flex-1 max-w-5xl mx-auto w-full p-6">
-            <div class="mb-8">
-                <h1 class="text-3xl font-bold text-white mb-2">Select a Server</h1>
-                <p class="text-gray-400 text-sm">Choose a server to configure your wizards instantly.</p>
-            </div>
-            <div id="server-list-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Populated via script -->
-            </div>
-        </div>
-
-        <!-- VIEW: SERVER DASHBOARD WITH TELEPORTING WIZARDS -->
-        <div id="view-server-dashboard" class="hidden flex-1 flex flex-col md:flex-row">
-            <aside class="w-full md:w-64 glass-panel border-r border-white/5 p-4 flex flex-col gap-2 shrink-0">
-                <div class="flex items-center gap-3 p-3 bg-dark-700 rounded-xl mb-4 border border-white/5">
-                    <img id="dash-server-icon" src="" alt="Server" class="w-10 h-10 rounded-lg object-cover">
+            <!-- TAB 2: TICKET SYSTEM WIZARD -->
+            <section id="tab-ticket" class="tab-content hidden space-y-6">
+                <div class="flex justify-between items-center">
                     <div>
-                        <h4 id="dash-server-name" class="text-sm font-bold text-white truncate w-36">Server</h4>
-                        <span class="text-xs text-green-400 font-medium">● Bot Active</span>
+                        <h1 class="text-2xl font-bold">Ticket System Setup Wizard</h1>
+                        <p class="text-sm text-gray-400">Step 1 of 7 — Create Ticket Panel & Interaction Type</p>
+                    </div>
+                    <div class="w-32 bg-gray-800 h-2 rounded-full overflow-hidden">
+                        <div class="bg-accent h-full w-1/7"></div>
                     </div>
                 </div>
-                <button onclick="teleportModule('overview')" class="dash-mod-btn w-full text-left py-2.5 px-3 rounded-lg text-sm font-medium text-white bg-accent-purple/20 border border-accent-purple/30 cursor-pointer">Overview</button>
-                <button onclick="teleportModule('tickets')" class="dash-mod-btn w-full text-left py-2.5 px-3 rounded-lg text-sm font-medium text-gray-400 hover:text-white hover:bg-dark-600 transition cursor-pointer">Ticket System Wizard</button>
-                <button onclick="teleportModule('applications')" class="dash-mod-btn w-full text-left py-2.5 px-3 rounded-lg text-sm font-medium text-gray-400 hover:text-white hover:bg-dark-600 transition cursor-pointer">Application Wizard</button>
-                <button onclick="teleportModule('welcome')" class="dash-mod-btn w-full text-left py-2.5 px-3 rounded-lg text-sm font-medium text-gray-400 hover:text-white hover:bg-dark-600 transition cursor-pointer">Welcome Wizard</button>
-                <button onclick="teleportModule('antiraid')" class="dash-mod-btn w-full text-left py-2.5 px-3 rounded-lg text-sm font-medium text-gray-400 hover:text-white hover:bg-dark-600 transition cursor-pointer">Anti-Raid Wizard</button>
-                <button onclick="teleportModule('antinuke')" class="dash-mod-btn w-full text-left py-2.5 px-3 rounded-lg text-sm font-medium text-gray-400 hover:text-white hover:bg-dark-600 transition cursor-pointer">Anti-Nuke Wizard</button>
-            </aside>
-
-            <main class="flex-1 p-6 overflow-y-auto space-y-12">
-                
-                <!-- OVERVIEW MODULE -->
-                <div id="mod-overview" class="module-view space-y-6">
-                    <h2 class="text-2xl font-bold text-white mb-2">Server Management Overview</h2>
-                    <p class="text-gray-400 text-sm">Select any module on the sidebar to instantly teleport to its configuration wizard.</p>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="glass-panel p-5 rounded-xl border border-white/5">
-                            <span class="text-xs text-gray-400">Total Members</span>
-                            <h3 class="text-2xl font-bold text-white mt-1">1,420</h3>
-                        </div>
-                        <div class="glass-panel p-5 rounded-xl border border-white/5">
-                            <span class="text-xs text-gray-400">Wizards Status</span>
-                            <h3 class="text-2xl font-bold text-white mt-1">Ready</h3>
-                        </div>
-                        <div class="glass-panel p-5 rounded-xl border border-white/5">
-                            <span class="text-xs text-gray-400">Bot Connection</span>
-                            <h3 class="text-2xl font-bold text-green-400 mt-1">Online & Ready</h3>
-                        </div>
+                <div class="bg-cardbg border border-gray-800 p-6 rounded-xl space-y-4">
+                    <h3 class="font-semibold text-lg">Step 1 — Configure Panel</h3>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-400 uppercase mb-2">Panel Style</label>
+                        <select class="w-full bg-gray-900 border border-gray-800 rounded-lg p-3 text-sm focus:outline-none focus:border-accent">
+                            <option>Normal Button Panel</option>
+                            <option>Dropdown Menu Panel</option>
+                        </select>
                     </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-400 uppercase mb-2">Panel Title & Description</label>
+                        <input type="text" value="Support Center" class="w-full bg-gray-900 border border-gray-800 rounded-lg p-3 text-sm mb-3 focus:outline-none focus:border-accent">
+                        <textarea class="w-full bg-gray-900 border border-gray-800 rounded-lg p-3 text-sm focus:outline-none focus:border-accent" rows="3">Select an option or click below to open a ticket.</textarea>
+                    </div>
+                    <button class="bg-accent hover:bg-accenthover text-white font-medium px-5 py-2.5 rounded-lg text-sm transition">Next Step &rarr;</button>
                 </div>
+            </section>
 
-                <!-- 1. TICKET SYSTEM WIZARD -->
-                <div id="mod-tickets" class="module-view space-y-6 pt-6 border-t border-white/5">
-                    <div class="flex justify-between items-center mb-4">
-                        <div>
-                            <h2 class="text-2xl font-bold text-white">Ticket System Setup Wizard</h2>
-                            <p id="ticket-step-indicator" class="text-xs text-accent-lavender font-semibold mt-1">Step 1 of 7</p>
-                        </div>
-                        <div class="w-48 bg-dark-700 h-2 rounded-full overflow-hidden border border-white/5">
-                            <div id="ticket-progress-bar" class="bg-accent-purple h-full w-[14%] transition-all"></div>
-                        </div>
-                    </div>
-
-                    <!-- Step 1 -->
-                    <div class="wizard-step-ticket glass-panel p-6 rounded-xl border border-white/5 space-y-4" data-step="1">
-                        <h3 class="text-lg font-bold text-white">Step 1 — Create Ticket Panel & Interaction Type</h3>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-300 mb-1">Panel Style</label>
-                            <select id="t-interaction-style" onchange="toggleTicketStyleOptions()" class="w-full bg-dark-800 border border-white/10 rounded-lg p-2.5 text-sm text-white">
-                                <option value="button">Normal Button Panel</option>
-                                <option value="dropdown">Dropdown Menu Selector</option>
-                            </select>
-                        </div>
-                        <div id="dropdown-category-builder" class="hidden space-y-3 p-4 bg-dark-800 rounded-lg border border-white/10">
-                            <label class="block text-xs font-semibold text-accent-lavender">Configure Dropdown Categories & Names</label>
-                            <input type="text" id="t-cat-1" class="w-full bg-dark-900 border border-white/10 rounded-lg p-2 text-sm text-white" placeholder="Category 1 Name (e.g. Billing Support)">
-                            <input type="text" id="t-cat-2" class="w-full bg-dark-900 border border-white/10 rounded-lg p-2 text-sm text-white" placeholder="Category 2 Name (e.g. General Help)">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-300 mb-1">Panel Title & Description</label>
-                            <input type="text" id="t-title-input" class="w-full bg-dark-800 border border-white/10 rounded-lg p-2.5 text-sm text-white mb-2" placeholder="Support Center">
-                            <textarea id="t-desc-input" rows="2" class="w-full bg-dark-800 border border-white/10 rounded-lg p-2.5 text-sm text-white" placeholder="Select an option or click below to open a ticket."></textarea>
-                        </div>
-                        <div class="flex justify-end gap-3 pt-4">
-                            <button onclick="ticketStep(2)" class="py-2 px-5 bg-accent-purple hover:bg-purple-600 text-white font-semibold rounded-lg text-sm cursor-pointer">Next Step →</button>
-                        </div>
-                    </div>
-
-                    <!-- Step 2 -->
-                    <div class="wizard-step-ticket hidden glass-panel p-6 rounded-xl border border-white/5 space-y-4" data-step="2">
-                        <h3 class="text-lg font-bold text-white">Step 2 — Questions Before Opening Ticket</h3>
-                        <p class="text-sm text-gray-400">Define questions asked to the user before the ticket channel is created.</p>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-300 mb-1">Question 1</label>
-                            <input type="text" id="t-q1" class="w-full bg-dark-800 border border-white/10 rounded-lg p-2.5 text-sm text-white" placeholder="What is your issue?">
-                        </div>
-                        <div class="flex justify-between pt-4">
-                            <button onclick="ticketStep(1)" class="py-2 px-5 bg-dark-600 text-white font-semibold rounded-lg text-sm cursor-pointer">← Back</button>
-                            <button onclick="ticketStep(3)" class="py-2 px-5 bg-accent-purple hover:bg-purple-600 text-white font-semibold rounded-lg text-sm cursor-pointer">Next Step →</button>
-                        </div>
-                    </div>
-
-                    <!-- Step 3 -->
-                    <div class="wizard-step-ticket hidden glass-panel p-6 rounded-xl border border-white/5 space-y-4" data-step="3">
-                        <h3 class="text-lg font-bold text-white">Step 3 — Support Roles & Permissions</h3>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-300 mb-1">Support Role ID</label>
-                            <input type="text" id="t-role-input" class="w-full bg-dark-800 border border-white/10 rounded-lg p-2.5 text-sm text-white" placeholder="Role ID">
-                        </div>
-                        <div class="flex justify-between pt-4">
-                            <button onclick="ticketStep(2)" class="py-2 px-5 bg-dark-600 text-white font-semibold rounded-lg text-sm cursor-pointer">← Back</button>
-                            <button onclick="ticketStep(4)" class="py-2 px-5 bg-accent-purple hover:bg-purple-600 text-white font-semibold rounded-lg text-sm cursor-pointer">Next Step →</button>
-                        </div>
-                    </div>
-
-                    <!-- Step 4 -->
-                    <div class="wizard-step-ticket hidden glass-panel p-6 rounded-xl border border-white/5 space-y-4" data-step="4">
-                        <h3 class="text-lg font-bold text-white">Step 4 — Limits & Naming</h3>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-300 mb-1">Max Open Tickets Per Member</label>
-                            <input type="number" id="t-max-input" value="1" class="w-full bg-dark-800 border border-white/10 rounded-lg p-2.5 text-sm text-white">
-                        </div>
-                        <div class="flex justify-between pt-4">
-                            <button onclick="ticketStep(3)" class="py-2 px-5 bg-dark-600 text-white font-semibold rounded-lg text-sm cursor-pointer">← Back</button>
-                            <button onclick="ticketStep(5)" class="py-2 px-5 bg-accent-purple hover:bg-purple-600 text-white font-semibold rounded-lg text-sm cursor-pointer">Next Step →</button>
-                        </div>
-                    </div>
-
-                    <!-- Step 5 -->
-                    <div class="wizard-step-ticket hidden glass-panel p-6 rounded-xl border border-white/5 space-y-4" data-step="5">
-                        <h3 class="text-lg font-bold text-white">Step 5 — Transcript Logging</h3>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-300 mb-1">Log Channel ID</label>
-                            <input type="text" id="t-log-input" class="w-full bg-dark-800 border border-white/10 rounded-lg p-2.5 text-sm text-white" placeholder="Channel ID">
-                        </div>
-                        <div class="flex justify-between pt-4">
-                            <button onclick="ticketStep(4)" class="py-2 px-5 bg-dark-600 text-white font-semibold rounded-lg text-sm cursor-pointer">← Back</button>
-                            <button onclick="ticketStep(6)" class="py-2 px-5 bg-accent-purple hover:bg-purple-600 text-white font-semibold rounded-lg text-sm cursor-pointer">Next Step →</button>
-                        </div>
-                    </div>
-
-                    <!-- Step 6 -->
-                    <div class="wizard-step-ticket hidden glass-panel p-6 rounded-xl border border-white/5 space-y-4" data-step="6">
-                        <h3 class="text-lg font-bold text-white">Step 6 — Review Configuration</h3>
-                        <div class="flex justify-between pt-4">
-                            <button onclick="ticketStep(5)" class="py-2 px-5 bg-dark-600 text-white font-semibold rounded-lg text-sm cursor-pointer">← Back</button>
-                            <button onclick="ticketStep(7)" class="py-2 px-5 bg-green-600 hover:bg-green-500 text-white font-semibold rounded-lg text-sm cursor-pointer">Publish Ticket Panel 🚀</button>
-                        </div>
-                    </div>
-
-                    <!-- Step 7: Success / Create Another -->
-                    <div class="wizard-step-ticket hidden glass-panel p-6 rounded-xl border border-white/5 space-y-4 text-center py-10" data-step="7">
-                        <h3 class="text-2xl font-bold text-white mb-2">Success! Ticket Panel Published</h3>
-                        <p class="text-gray-400 text-sm mb-6">Sphynx has successfully deployed the ticket panel to Discord.</p>
-                        <button onclick="resetTicketWizard()" class="py-2.5 px-6 bg-accent-purple text-white font-semibold rounded-lg text-sm cursor-pointer">Create Another Ticket Panel</button>
-                    </div>
+            <!-- TAB 3: APPLICATION WIZARD -->
+            <section id="tab-application" class="tab-content hidden space-y-6">
+                <div>
+                    <h1 class="text-2xl font-bold">Application System Wizard</h1>
+                    <p class="text-sm text-gray-400">Step 1 of 7 — Application Details & Categories</p>
                 </div>
-
-                <!-- 2. APPLICATION SYSTEM WIZARD -->
-                <div id="mod-applications" class="module-view space-y-6 pt-6 border-t border-white/5">
-                    <div class="flex justify-between items-center mb-4">
-                        <div>
-                            <h2 class="text-2xl font-bold text-white">Application System Wizard</h2>
-                            <p id="app-step-indicator" class="text-xs text-accent-lavender font-semibold mt-1">Step 1 of 7</p>
-                        </div>
-                        <div class="w-48 bg-dark-700 h-2 rounded-full overflow-hidden border border-white/5">
-                            <div id="app-progress-bar" class="bg-accent-purple h-full w-[14%] transition-all"></div>
-                        </div>
+                <div class="bg-cardbg border border-gray-800 p-6 rounded-xl space-y-4">
+                    <h3 class="font-semibold text-lg">Step 1 — Form Builder</h3>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-400 uppercase mb-2">Application Name & Categories</label>
+                        <input type="text" value="Staff Application Form" class="w-full bg-gray-900 border border-gray-800 rounded-lg p-3 text-sm mb-3 focus:outline-none focus:border-accent">
+                        <input type="text" placeholder="Category Names (e.g., Moderation, Developer)" class="w-full bg-gray-900 border border-gray-800 rounded-lg p-3 text-sm focus:outline-none focus:border-accent">
                     </div>
-
-                    <!-- Step 1 -->
-                    <div class="wizard-step-app glass-panel p-6 rounded-xl border border-white/5 space-y-4" data-step="1">
-                        <h3 class="text-lg font-bold text-white">Step 1 — Application Details & Categories</h3>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-300 mb-1">Application Name & Categories</label>
-                            <input type="text" id="app-name-input" class="w-full bg-dark-800 border border-white/10 rounded-lg p-2.5 text-sm text-white mb-2" placeholder="Staff Application Form">
-                            <input type="text" id="app-cat-input" class="w-full bg-dark-800 border border-white/10 rounded-lg p-2.5 text-sm text-white" placeholder="Category Names (e.g. Moderation, Developer)">
-                        </div>
-                        <div class="flex justify-end pt-4">
-                            <button onclick="appStep(2)" class="py-2 px-5 bg-accent-purple hover:bg-purple-600 text-white font-semibold rounded-lg text-sm cursor-pointer">Next Step →</button>
-                        </div>
-                    </div>
-
-                    <!-- Step 2 -->
-                    <div class="wizard-step-app hidden glass-panel p-6 rounded-xl border border-white/5 space-y-4" data-step="2">
-                        <h3 class="text-lg font-bold text-white">Step 2 — Questions Builder</h3>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-300 mb-1">Question 1</label>
-                            <input type="text" id="app-q1-input" class="w-full bg-dark-800 border border-white/10 rounded-lg p-2.5 text-sm text-white" placeholder="Why do you want to apply?">
-                        </div>
-                        <div class="flex justify-between pt-4">
-                            <button onclick="appStep(1)" class="py-2 px-5 bg-dark-600 text-white font-semibold rounded-lg text-sm cursor-pointer">← Back</button>
-                            <button onclick="appStep(3)" class="py-2 px-5 bg-accent-purple hover:bg-purple-600 text-white font-semibold rounded-lg text-sm cursor-pointer">Next Step →</button>
-                        </div>
-                    </div>
-
-                    <!-- Step 3 -->
-                    <div class="wizard-step-app hidden glass-panel p-6 rounded-xl border border-white/5 space-y-4" data-step="3">
-                        <h3 class="text-lg font-bold text-white">Step 3 — Panel Design & Embeds</h3>
-                        <div class="flex justify-between pt-4">
-                            <button onclick="appStep(2)" class="py-2 px-5 bg-dark-600 text-white font-semibold rounded-lg text-sm cursor-pointer">← Back</button>
-                            <button onclick="appStep(4)" class="py-2 px-5 bg-accent-purple hover:bg-purple-600 text-white font-semibold rounded-lg text-sm cursor-pointer">Next Step →</button>
-                        </div>
-                    </div>
-
-                    <!-- Step 4 -->
-                    <div class="wizard-step-app hidden glass-panel p-6 rounded-xl border border-white/5 space-y-4" data-step="4">
-                        <h3 class="text-lg font-bold text-white">Step 4 — Roles Given & Roles Forbidden</h3>
-                        <div class="space-y-3">
-                            <div>
-                                <label class="block text-xs font-semibold text-gray-300 mb-1">Role Given on Acceptance</label>
-                                <input type="text" id="app-role-give-input" class="w-full bg-dark-800 border border-white/10 rounded-lg p-2.5 text-sm text-white" placeholder="Role ID">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-gray-300 mb-1">Role Forbidden (Cannot have this role)</label>
-                                <input type="text" id="app-role-forbid-input" class="w-full bg-dark-800 border border-white/10 rounded-lg p-2.5 text-sm text-white" placeholder="Muted / Blacklisted Role ID">
-                            </div>
-                        </div>
-                        <div class="flex justify-between pt-4">
-                            <button onclick="appStep(3)" class="py-2 px-5 bg-dark-600 text-white font-semibold rounded-lg text-sm cursor-pointer">← Back</button>
-                            <button onclick="appStep(5)" class="py-2 px-5 bg-accent-purple hover:bg-purple-600 text-white font-semibold rounded-lg text-sm cursor-pointer">Next Step →</button>
-                        </div>
-                    </div>
-
-                    <!-- Step 5 -->
-                    <div class="wizard-step-app hidden glass-panel p-6 rounded-xl border border-white/5 space-y-4" data-step="5">
-                        <h3 class="text-lg font-bold text-white">Step 5 — Review Pipeline & Notifications</h3>
-                        <div class="flex justify-between pt-4">
-                            <button onclick="appStep(4)" class="py-2 px-5 bg-dark-600 text-white font-semibold rounded-lg text-sm cursor-pointer">← Back</button>
-                            <button onclick="appStep(6)" class="py-2 px-5 bg-accent-purple hover:bg-purple-600 text-white font-semibold rounded-lg text-sm cursor-pointer">Next Step →</button>
-                        </div>
-                    </div>
-
-                    <!-- Step 6 -->
-                    <div class="wizard-step-app hidden glass-panel p-6 rounded-xl border border-white/5 space-y-4" data-step="6">
-                        <h3 class="text-lg font-bold text-white">Step 6 — Review Configuration</h3>
-                        <div class="flex justify-between pt-4">
-                            <button onclick="appStep(5)" class="py-2 px-5 bg-dark-600 text-white font-semibold rounded-lg text-sm cursor-pointer">← Back</button>
-                            <button onclick="appStep(7)" class="py-2 px-5 bg-green-600 hover:bg-green-500 text-white font-semibold rounded-lg text-sm cursor-pointer">Publish Application 🚀</button>
-                        </div>
-                    </div>
-
-                    <!-- Step 7: Success / Create Another Form -->
-                    <div class="wizard-step-app hidden glass-panel p-6 rounded-xl border border-white/5 space-y-4 text-center py-10" data-step="7">
-                        <h3 class="text-2xl font-bold text-white mb-2">Success! Application Published</h3>
-                        <p class="text-gray-400 text-sm mb-6">Sphynx has deployed the application form and review pipeline.</p>
-                        <button onclick="resetAppWizard()" class="py-2.5 px-6 bg-accent-purple text-white font-semibold rounded-lg text-sm cursor-pointer">Create Another Form</button>
-                    </div>
+                    <button class="bg-accent hover:bg-accenthover text-white font-medium px-5 py-2.5 rounded-lg text-sm transition">Next Step &rarr;</button>
                 </div>
+            </section>
 
-                <!-- WELCOME WIZARD -->
-                <div id="mod-welcome" class="module-view space-y-6 pt-6 border-t border-white/5">
-                    <h2 class="text-2xl font-bold text-white mb-2">Welcome System Wizard</h2>
-                    <div class="glass-panel p-6 rounded-xl border border-white/5 space-y-4">
-                        <label class="block text-xs font-semibold text-gray-300 mb-1">Welcome Channel ID</label>
-                        <input type="text" class="w-full bg-dark-800 border border-white/10 rounded-lg p-2.5 text-sm text-white" placeholder="Channel ID">
-                        <button onclick="alert('Welcome system activated!')" class="py-2 px-5 bg-accent-purple text-white font-semibold rounded-lg text-sm cursor-pointer">Activate Welcome</button>
-                    </div>
+            <!-- TAB 4: WELCOME WIZARD -->
+            <section id="tab-welcome" class="tab-content hidden space-y-6">
+                <div>
+                    <h1 class="text-2xl font-bold">Welcome System Wizard</h1>
+                    <p class="text-sm text-gray-400">Configure automated welcome cards and direct messages.</p>
                 </div>
-
-                <!-- ANTIRAID WIZARD -->
-                <div id="mod-antiraid" class="module-view space-y-6 pt-6 border-t border-white/5">
-                    <h2 class="text-2xl font-bold text-white mb-2">Anti-Raid Wizard</h2>
-                    <div class="glass-panel p-6 rounded-xl border border-white/5 space-y-4">
-                        <label class="block text-xs font-semibold text-gray-300 mb-1">Join Threshold</label>
-                        <input type="number" value="5" class="w-full bg-dark-800 border border-white/10 rounded-lg p-2.5 text-sm text-white">
-                        <button onclick="alert('Anti-Raid activated!')" class="py-2 px-5 bg-accent-purple text-white font-semibold rounded-lg text-sm cursor-pointer">Enable Anti-Raid</button>
+                <div class="bg-cardbg border border-gray-800 p-6 rounded-xl space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-400 uppercase mb-2">Welcome Channel ID</label>
+                        <input type="text" placeholder="Channel ID" class="w-full bg-gray-900 border border-gray-800 rounded-lg p-3 text-sm mb-4 focus:outline-none focus:border-accent">
                     </div>
+                    <button class="bg-accent hover:bg-accenthover text-white font-medium px-5 py-2.5 rounded-lg text-sm transition">Activate Welcome</button>
                 </div>
+            </section>
 
-                <!-- ANTINUKE WIZARD -->
-                <div id="mod-antinuke" class="module-view space-y-6 pt-6 border-t border-white/5">
-                    <h2 class="text-2xl font-bold text-white mb-2">Anti-Nuke Wizard</h2>
-                    <div class="glass-panel p-6 rounded-xl border border-white/5 space-y-4">
-                        <button onclick="alert('Anti-Nuke activated!')" class="py-2 px-5 bg-accent-purple text-white font-semibold rounded-lg text-sm cursor-pointer">Enable Anti-Nuke</button>
+            <!-- TAB 5: ANTI-RAID WIZARD -->
+            <section id="tab-antiraid" class="tab-content hidden space-y-6">
+                <div>
+                    <h1 class="text-2xl font-bold">Anti-Raid Wizard</h1>
+                    <p class="text-sm text-gray-400">Protect your server against automated user mass-joins.</p>
+                </div>
+                <div class="bg-cardbg border border-gray-800 p-6 rounded-xl space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-400 uppercase mb-2">Join Threshold (Members per 10s)</label>
+                        <input type="number" value="5" class="w-full bg-gray-900 border border-gray-800 rounded-lg p-3 text-sm mb-4 focus:outline-none focus:border-accent">
                     </div>
+                    <button class="bg-accent hover:bg-accenthover text-white font-medium px-5 py-2.5 rounded-lg text-sm transition">Enable Anti-Raid</button>
                 </div>
+            </section>
 
-            </main>
-        </div>
+            <!-- TAB 6: ANTI-NUKE WIZARD -->
+            <section id="tab-antinuke" class="tab-content hidden space-y-6">
+                <div>
+                    <h1 class="text-2xl font-bold">Anti-Nuke Wizard</h1>
+                    <p class="text-sm text-gray-400">Lock down critical channels, roles, and webhook deletions.</p>
+                </div>
+                <div class="bg-cardbg border border-gray-800 p-6 rounded-xl space-y-4">
+                    <p class="text-sm text-gray-400">Instantly quarantine administrators or bots that delete mass channels or ban members.</p>
+                    <button class="bg-accent hover:bg-accenthover text-white font-medium px-5 py-2.5 rounded-lg text-sm transition">Enable Anti-Nuke</button>
+                </div>
+            </section>
 
+        </main>
     </div>
 
-    <script>
-        let authenticatedUser = null;
-        let selectedServer = null;
-
-        const mockServers = [
-            { id: '101', name: "SNIPER'S EMPIRE", icon: 'image_7.png', permissions: 8, botInstalled: true },
-            { id: '102', name: 'Flex Network', icon: 'image_8.png', permissions: 8, botInstalled: true }
-        ];
-
-        // Automatically parse OAuth2 code from URL if redirected back from Discord
-        window.onload = function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const code = urlParams.get('code');
-            if (code || localStorage.getItem('sphynx_auth')) {
-                localStorage.setItem('sphynx_auth', 'true');
-                handleDiscordLoginSuccess();
-            }
-        };
-
-        function handleDiscordLoginSuccess() {
-            authenticatedUser = {
-                username: 'Sniper',
-                avatar: 'image_7.png'
-            };
-
-            document.getElementById('nav-avatar').src = authenticatedUser.avatar;
-            document.getElementById('nav-username').textContent = authenticatedUser.username;
-
-            document.getElementById('auth-gate').classList.add('hidden');
-            document.getElementById('main-app').classList.remove('hidden');
-            document.getElementById('main-app').classList.add('flex');
-            switchView('landing');
-        }
-
-        function switchView(viewName) {
-            document.getElementById('view-landing').classList.add('hidden');
-            document.getElementById('view-commands').classList.add('hidden');
-            document.getElementById('view-dashboard-select').classList.add('hidden');
-            document.getElementById('view-server-dashboard').classList.add('hidden');
-
-            if (viewName === 'landing') {
-                document.getElementById('view-landing').classList.remove('hidden');
-            } else if (viewName === 'commands') {
-                document.getElementById('view-commands').classList.remove('hidden');
-            } else if (viewName === 'dashboard-select') {
-                document.getElementById('view-dashboard-select').classList.remove('hidden');
-                renderServerList();
-            } else if (viewName === 'server-dashboard') {
-                document.getElementById('view-server-dashboard').classList.remove('hidden');
-                document.getElementById('view-server-dashboard').classList.add('flex');
-            }
-        }
-
-        function renderServerList() {
-            const container = document.getElementById('server-list-container');
-            container.innerHTML = '';
-            mockServers.forEach(server => {
-                const card = document.createElement('div');
-                card.className = 'glass-panel p-6 rounded-2xl border border-white/5 flex flex-col justify-between';
-                card.innerHTML = `
-                    <div class="flex items-center gap-4 mb-4">
-                        <img src="${server.icon}" alt="Icon" class="w-12 h-12 rounded-xl object-cover border border-white/10">
-                        <div>
-                            <h3 class="font-bold text-white text-base">${server.name}</h3>
-                            <span class="text-xs text-green-400">Administrator</span>
-                        </div>
-                    </div>
-                    <button onclick="openServerDashboard('${server.id}')" class="w-full py-2.5 bg-accent-purple hover:bg-purple-600 text-white font-semibold rounded-xl text-sm transition cursor-pointer">Configure Wizards</button>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        function openServerDashboard(serverId) {
-            selectedServer = mockServers.find(s => s.id === serverId);
-            document.getElementById('dash-server-name').textContent = selectedServer.name;
-            document.getElementById('dash-server-icon').src = selectedServer.icon;
-            switchView('server-dashboard');
-            teleportModule('overview');
-        }
-
-        // Smooth Teleportation to specific wizard module instantly
-        function teleportModule(modName) {
-            const targetElement = document.getElementById(`mod-${modName}`);
-            if (targetElement) {
-                targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-            document.querySelectorAll('.dash-mod-btn').forEach(el => {
-                el.classList.remove('bg-accent-purple/20', 'border', 'border-accent-purple/30', 'text-white');
-                el.classList.add('text-gray-400');
-            });
-            event.target.classList.add('bg-accent-purple/20', 'border', 'border-accent-purple/30', 'text-white');
-            event.target.classList.remove('text-gray-400');
-        }
-
-        // Toggle category names if Dropdown Menu style is picked
-        function toggleTicketStyleOptions() {
-            const style = document.getElementById('t-interaction-style').value;
-            const dropdownBuilder = document.getElementById('dropdown-category-builder');
-            if (style === 'dropdown') {
-                dropdownBuilder.classList.remove('hidden');
-            } else {
-                dropdownBuilder.classList.add('hidden');
-            }
-        }
-
-        // Ticket Wizard Stepper Logic
-        function ticketStep(stepNum) {
-            document.querySelectorAll('.wizard-step-ticket').forEach(el => el.classList.add('hidden'));
-            document.querySelector(`.wizard-step-ticket[data-step="${stepNum}"]`).classList.remove('hidden');
-            document.getElementById('ticket-step-indicator').textContent = `Step ${stepNum} of 7`;
-            document.getElementById('ticket-progress-bar').style.width = `${(stepNum / 7) * 100}%`;
-        }
-
-        // Completely reset Ticket Wizard inputs for creating a fresh new panel
-        function resetTicketWizard() {
-            document.getElementById('t-interaction-style').value = 'button';
-            document.getElementById('dropdown-category-builder').classList.add('hidden');
-            document.getElementById('t-cat-1').value = '';
-            document.getElementById('t-cat-2').value = '';
-            document.getElementById('t-title-input').value = '';
-            document.getElementById('t-desc-input').value = '';
-            document.getElementById('t-q1').value = '';
-            document.getElementById('t-role-input').value = '';
-            document.getElementById('t-max-input').value = '1';
-            document.getElementById('t-log-input').value = '';
-            ticketStep(1);
-        }
-
-        // Application Wizard Stepper Logic
-        function appStep(stepNum) {
-            document.querySelectorAll('.wizard-step-app').forEach(el => el.classList.add('hidden'));
-            document.querySelector(`.wizard-step-app[data-step="${stepNum}"]`).classList.remove('hidden');
-            document.getElementById('app-step-indicator').textContent = `Step ${stepNum} of 7`;
-            document.getElementById('app-progress-bar').style.width = `${(stepNum / 7) * 100}%`;
-        }
-
-        // Completely reset Application Wizard inputs for creating a fresh new form
-        function resetAppWizard() {
-            document.getElementById('app-name-input').value = '';
-            document.getElementById('app-cat-input').value = '';
-            document.getElementById('app-q1-input').value = '';
-            document.getElementById('app-role-give-input').value = '';
-            document.getElementById('app-role-forbid-input').value = '';
-            appStep(1);
-        }
-    </script>
+    <!-- JavaScript Link -->
+    <script src="script.js"></script>
 </body>
 </html>
